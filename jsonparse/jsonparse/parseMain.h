@@ -31,53 +31,74 @@ enum CURRENTSTATE
 
 struct JSONOBJECT
 {
-	string data;
+	//表示json对象的值，可以作为json中arr的表示
+	std::string data;
 };
 
 struct JSONDATA
 {
-	any data;
+	//json中value的数据
+	std::any data;
+	//json的类型
 	JSONTYPE type;
+	//json处于的层级
 	int level;
 };
 
 struct TREEINDEX
 {
+	//左字符得索引
 	int _leftindex;
+	//右字符得索引
 	int _rightindex;
+	//左字符是什么
 	std::string _leftc;
+	//右字符是什么
 	std::string _rightc;
 
 	TREEINDEX(int leftindex, int rightindex, std::string leftc, std::string rightc) :
 		_leftindex(leftindex), _rightindex(rightindex), _leftc(leftc), _rightc(rightc) {}
 
-	TREEINDEX();
+	TREEINDEX() {};
 };
 
 class parseMain
 {
 public:
 	parseMain();
-	parseMain(string jsontext);
+	parseMain(std::string jsontext);
 	~parseMain();
 
-	void setJsonText(string jsontext);
+	//设置json
+	void setJsonText(std::string jsontext);
 
 private:
-	bool parseJsonData();								//开始分析json得入口
-	void jugleJsonValueType(string value);				//分析value是什么类型
-	bool jugleJsonPair();								//对json字符进行配对,并附带检查json得功能
-	std::multimap<int, TREEINDEX> getLevelJsonData();	//根据pair符号，取得所有层级得数据
-	bool jugleKeyValuePair();							//检查key和value中的""是否合理
+	//开始分析json得入口
+	bool parseJsonData();		
+	//分析value是什么类型
+	void jugleJsonValueType(std::string value);				
+	//对json字符进行配对,并附带检查json得功能
+	bool jugleJsonPair();		
+	//根据pair符号，取得所有层级得数据
+	std::multimap<int, TREEINDEX> getLevelJsonData();		
+	//检查key和value中的""是否合理
+	bool jugleKeyValuePair();								
 
 private:
+	//当前得json字符
 	std::string _currentJson = "";
-	std::map<string, JSONDATA> _currentJsonData{};
-	std::map<int, std::string> _currentPairLeft;		//左边符号，第几个和是什么字符
-	std::map<int, std::string> _currentPairRight;		//右边符号
+	//当前得json分层
+	std::map<std::string, JSONDATA> _currentJsonData{};
+	//左边符号，第几个和是什么字符
+	std::map<int, std::string> _currentPairLeft;	
+	//右边符号
+	std::map<int, std::string> _currentPairRight;		
 
+	//当前正在解析得key
 	std::string _currentKey = "";
+	//当前正在解析得value
 	std::string _currentValue = "";
 
-	CURRENTSTATE _currentState = PROGRAMBEGIN;
+	//当前json解析到那一步了
+	CURRENTSTATE _currentState = CURRENTSTATE::PROGRAMBEGIN;
 };
